@@ -1,0 +1,10 @@
+/.idea
+/.vim
+
+/.env
+/.venv
+
+*.py[co]
+
+*.swp
+*.sqlite3

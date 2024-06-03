@@ -1,0 +1,22 @@
+services:
+  redis:
+    image: docker.io/redis:6.0-alpine
+    ports:
+     - "127.0.0.1:6379:6379"
+    networks:
+      default:
+        aliases:
+          - redis
+
+  pushpin:
+    image: fanout/pushpin
+    command: ["pushpin", "--merge-output", "--route", "* localhost:18443"]
+    restart: on-failure
+    ports:
+      - "8000:7999"
+      - 5560-5563:5560-5563
+    extra_hosts:
+    - "localhost:host-gateway"
+
+networks:
+  default:

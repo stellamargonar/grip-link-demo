@@ -17,9 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from grip_link_demo.views import SSEIsExpiredView, SSESpecializedChannelView
+from grip_link_demo.views import SSEIsExpiredView, SSESpecializedChannelView, SSEGenerateMessages
 
 urlpatterns = [
     path("events/is-expired/", SSEIsExpiredView.as_view(), name="streaming-is-expired-channel"),
     path("events/<str:channel_uuid>/", SSESpecializedChannelView.as_view(), name="streaming-specialized-channel"),
+    path("events/<str:channel_uuid>/send", SSEGenerateMessages.as_view()),
 ]

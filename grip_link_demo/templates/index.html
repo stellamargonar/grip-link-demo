@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <title>Server-sent events demo</title>
+</head>
+<body>
+
+<ul>
+</ul>
+
+<script>
+    const channelUuid = crypto.randomUUID(),
+        eventUrl = `/events/${channelUuid}/`;
+
+    const evtSource = new EventSource(eventUrl);
+
+    fetch(`http://localhost:8000/events/${channelUuid}/send`).then();
+
+
+    console.log(evtSource.withCredentials);
+    console.log(evtSource.readyState);
+    console.log(evtSource.url);
+    const eventList = document.querySelector('ul');
+
+    evtSource.onopen = function () {
+        console.log("Connection to server opened.");
+    };
+
+    evtSource.onmessage = function (e) {
+        console.log("Received message");
+        const newElement = document.createElement("li");
+
+        newElement.textContent = "message: " + e.data;
+        eventList.appendChild(newElement);
+    };
+</script>
+</body>
+</html>

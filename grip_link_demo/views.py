@@ -8,8 +8,8 @@ from django_grip import publish, set_hold_stream
 from gripcontrol import Channel, HttpStreamFormat
 
 
-MODE = 0  # no prev id, does not work
-# MODE = 1  # always 0 as prev id, does not work when a message is sent and received before the first is-expired call
+# MODE = 0  # no prev id, does not work
+MODE = 1  # always 0 as prev id, does not work when a message is sent and received before the first is-expired call
 # MODE = 2  # set sequence id and prev id, works
 
 

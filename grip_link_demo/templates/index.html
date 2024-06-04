@@ -15,9 +15,6 @@
 
     const evtSource = new EventSource(eventUrl);
 
-    fetch(`http://localhost:8000/events/${channelUuid}/send`).then();
-
-
     console.log(evtSource.withCredentials);
     console.log(evtSource.readyState);
     console.log(evtSource.url);
@@ -25,6 +22,8 @@
 
     evtSource.onopen = function () {
         console.log("Connection to server opened.");
+        fetch(`http://localhost:8000/events/${channelUuid}/send`).then();
+        {#setTimeout(() => fetch(`http://localhost:8000/events/${channelUuid}/send`).then(), 2000);#}
     };
 
     evtSource.onmessage = function (e) {

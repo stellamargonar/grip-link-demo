@@ -8,11 +8,17 @@ from django_grip import publish, set_hold_stream
 from gripcontrol import Channel, HttpStreamFormat
 
 
+MODE = 0  # no prev id, does not work
+# MODE = 1  # always 0 as prev id, does not work when a message is sent and received before the first is-expired call
+# MODE = 2  # set sequence id and prev id, works
+
+
 class SSESpecializedChannelView(View):
     def get(self, request: HttpRequest, channel_uuid: str) -> HttpResponse:
         resp = HttpResponse(content_type="text/event-stream")
 
-        channel = Channel(channel_uuid, prev_id="0")
+        prev_id = None if MODE == 0 else "0"
+        channel = Channel(channel_uuid, prev_id=prev_id)
         set_hold_stream(
             request,
             channel,
@@ -35,7 +41,7 @@ class SSEIsExpiredView(View):
         if channel_is_expired(channel_str):
             return resp
 
-        channel = Channel(channel_str, prev_id=0)
+        channel = Channel(channel_str)
         set_hold_stream(
             request,
             channel,
@@ -60,8 +66,18 @@ def channel_is_expired(channel):
 def publish_messages(channel_uuid):
     text = "messaggio da base lunare alpha".split()
 
-    for tok in text:
+    for i, tok in enumerate(text):
         message = "\n".join([f"data: {tok}", "", ""])
-        print(f"> Send {tok}")
-        publish(channel_uuid, HttpStreamFormat(message + "\n"), prev_id="0")
+        if MODE == 0:
+            prev_id = None
+            id_ = None
+        elif MODE == 1:
+            prev_id = "0"
+            id_ = None
+        else:
+            prev_id = str(i)
+            id_ = str(i+1)
+
+        print(f"> Send {tok}, id_ {id_}, prev_id {prev_id}")
+        publish(channel_uuid, HttpStreamFormat(message + "\n"), prev_id=prev_id, id=id_)
         time.sleep(2)

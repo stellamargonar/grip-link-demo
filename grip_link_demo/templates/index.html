@@ -15,9 +15,9 @@
 
     const evtSource = new EventSource(eventUrl);
 
-    console.log(evtSource.withCredentials);
-    console.log(evtSource.readyState);
-    console.log(evtSource.url);
+    console.log("withCredentials: ", evtSource.withCredentials);
+    console.log("readyState: ", evtSource.readyState);
+    console.log("url: ", evtSource.url);
     const eventList = document.querySelector('ul');
 
     evtSource.onopen = function () {
@@ -27,12 +27,18 @@
     };
 
     evtSource.onmessage = function (e) {
-        console.log("Received message");
+        console.log(`Received message: ${e.data}`);
         const newElement = document.createElement("li");
 
         newElement.textContent = "message: " + e.data;
         eventList.appendChild(newElement);
     };
+
+    evtSource.onerror = function (e) {
+        console.log("Error occurred", e);
+        evtSource.close();
+    };
+
 </script>
 </body>
 </html>
